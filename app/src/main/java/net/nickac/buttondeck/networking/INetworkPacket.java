@@ -14,5 +14,5 @@ public interface INetworkPacket {
 
     void toOutputStreamWriter(DataOutputStream writer) throws IOException;
 
-    void fromInputStreamReader(DataInputStream reader);
+    void fromInputStreamReader(DataInputStream reader) throws IOException;
 }

@@ -24,7 +24,7 @@ public class HelloPacket implements INetworkPacket {
     }
 
     @Override
-    public void fromInputStreamReader(DataInputStream reader) {
+    public void fromInputStreamReader(DataInputStream reader) throws IOException {
 
     }
 
