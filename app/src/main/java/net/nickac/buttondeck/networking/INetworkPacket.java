@@ -12,7 +12,7 @@ import java.io.IOException;
 public interface INetworkPacket {
     long getPacketId();
 
-    void toOutputStreamWriter(DataOutputStream writer) throws IOException;
+    void toOutputStream(DataOutputStream writer) throws IOException;
 
-    void fromInputStreamReader(DataInputStream reader) throws IOException;
+    void fromInputStream(DataInputStream reader) throws IOException;
 }

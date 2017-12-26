@@ -19,12 +19,12 @@ public class HelloPacket implements INetworkPacket {
     }
 
     @Override
-    public void toOutputStreamWriter(DataOutputStream writer) throws IOException {
+    public void toOutputStream(DataOutputStream writer) throws IOException {
         writer.writeInt(Constants.PROTOCOL_VERSION);
     }
 
     @Override
-    public void fromInputStreamReader(DataInputStream reader) throws IOException {
+    public void fromInputStream(DataInputStream reader) throws IOException {
 
     }
 
