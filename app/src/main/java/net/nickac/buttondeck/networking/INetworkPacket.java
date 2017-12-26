@@ -10,6 +10,10 @@ import java.io.IOException;
  * Please see the project root to find the LICENSE file.
  */
 public interface INetworkPacket {
+    void execute();
+
+    INetworkPacket clonePacket();
+
     long getPacketId();
 
     void toOutputStream(DataOutputStream writer) throws IOException;
