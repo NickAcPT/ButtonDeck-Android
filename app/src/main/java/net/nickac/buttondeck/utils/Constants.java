@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.util.LongSparseArray;
 
 import net.nickac.buttondeck.networking.INetworkPacket;
+import net.nickac.buttondeck.networking.impl.DesktopDisconnectPacket;
 import net.nickac.buttondeck.networking.impl.DeviceIdentityPacket;
 import net.nickac.buttondeck.networking.impl.HeartbeatPacket;
 import net.nickac.buttondeck.networking.impl.HelloPacket;
@@ -18,7 +19,7 @@ public class Constants {
     public static SharedPreferences sharedPreferences;
 
     public static String DEVICE_GUID_PREF = "device_guid";
-    public static int PROTOCOL_VERSION = 5;
+    public static int PROTOCOL_VERSION = 6;
     public static int PORT_NUMBER = 5080;
     public static LongSparseArray<INetworkPacket> packetMap = new LongSparseArray<>();
 
@@ -26,6 +27,7 @@ public class Constants {
         registerPacket(new HelloPacket());
         registerPacket(new DeviceIdentityPacket());
         registerPacket(new HeartbeatPacket());
+        registerPacket(new DesktopDisconnectPacket());
     }
 
 
