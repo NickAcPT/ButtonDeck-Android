@@ -23,12 +23,17 @@ public class TcpClient {
     private Thread internalThread;
     private Thread dataThread;
     private Thread dataDeliveryThread;
+    private List<Runnable> eventConnected = new ArrayList<>();
 
     public TcpClient(String ip, int port) {
         this.ip = ip;
         this.port = port;
         internalThread = new Thread(this::initSocket);
         internalThread.start();
+    }
+
+    public void onConnected(Runnable event) {
+        eventConnected.add(event);
     }
 
     public void sendPacket(INetworkPacket packet) {
@@ -44,18 +49,25 @@ public class TcpClient {
     }
 
     private void readData() {
+        List<Byte> readBytes = new ArrayList<>();
         DataInputStream inputStream;
         try {
             inputStream = new DataInputStream(internalSocket.getInputStream());
             while (internalSocket != null && internalSocket.isConnected()) {
-                long packetNumber = inputStream.readLong();
-                INetworkPacket packet = Constants.getNewPacket(packetNumber);
-                if (packet != null) {
-                    packet.fromInputStream(inputStream);
-                    packet.execute();
+                if (inputStream.available() > 0) {
+                    long packetNumber = inputStream.readLong();
+                    INetworkPacket packet = Constants.getNewPacket(packetNumber);
+                    if (packet != null) {
+                        packet.fromInputStream(inputStream);
+                        packet.execute();
+                    }
+                } else {
+                    Thread.sleep(50);
                 }
             }
         } catch (IOException e) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -88,13 +100,15 @@ public class TcpClient {
         try {
             internalSocket.close();
         } catch (IOException e) {
-
         }
     }
 
     private void initSocket() {
         try {
             internalSocket = new Socket(ip, port);
+            for (Runnable r : eventConnected) {
+                r.run();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

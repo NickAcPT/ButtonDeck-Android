@@ -1,8 +1,10 @@
 package net.nickac.buttondeck.utils;
 
+import android.content.SharedPreferences;
 import android.util.LongSparseArray;
 
 import net.nickac.buttondeck.networking.INetworkPacket;
+import net.nickac.buttondeck.networking.impl.DeviceIdentity;
 import net.nickac.buttondeck.networking.impl.HelloPacket;
 
 /**
@@ -11,13 +13,19 @@ import net.nickac.buttondeck.networking.impl.HelloPacket;
  * Please see the project root to find the LICENSE file.
  */
 public class Constants {
-    public static int PROTOCOL_VERSION = 1;
+    public static String sharedPreferencesName = "ApplicationData";
+    public static SharedPreferences sharedPreferences;
+
+    public static String DEVICE_GUID_PREF = "device_guid";
+    public static int PROTOCOL_VERSION = 5;
     public static int PORT_NUMBER = 5080;
     public static LongSparseArray<INetworkPacket> packetMap = new LongSparseArray<>();
 
     static {
         registerPacket(new HelloPacket());
+        registerPacket(new DeviceIdentity());
     }
+
 
     public static void registerPacket(INetworkPacket packet) {
         packetMap.append(packet.getPacketId(), packet);
