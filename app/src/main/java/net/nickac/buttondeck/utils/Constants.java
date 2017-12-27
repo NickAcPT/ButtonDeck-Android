@@ -5,7 +5,7 @@ import android.util.LongSparseArray;
 
 import net.nickac.buttondeck.networking.INetworkPacket;
 import net.nickac.buttondeck.networking.impl.DeviceIdentityPacket;
-import net.nickac.buttondeck.networking.impl.HearthbeatPacket;
+import net.nickac.buttondeck.networking.impl.HeartbeatPacket;
 import net.nickac.buttondeck.networking.impl.HelloPacket;
 
 /**
@@ -25,7 +25,7 @@ public class Constants {
     static {
         registerPacket(new HelloPacket());
         registerPacket(new DeviceIdentityPacket());
-        registerPacket(new HearthbeatPacket());
+        registerPacket(new HeartbeatPacket());
     }
 
 

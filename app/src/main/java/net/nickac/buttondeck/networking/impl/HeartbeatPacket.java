@@ -12,7 +12,7 @@ import java.io.IOException;
  * This project is licensed with the MIT license.
  * Please see the project root to find the LICENSE file.
  */
-public class HearthbeatPacket implements INetworkPacket {
+public class HeartbeatPacket implements INetworkPacket {
     @Override
     public void execute(TcpClient client, boolean received) {
 
@@ -20,7 +20,7 @@ public class HearthbeatPacket implements INetworkPacket {
 
     @Override
     public INetworkPacket clonePacket() {
-        return new HearthbeatPacket();
+        return new HeartbeatPacket();
     }
 
     @Override
