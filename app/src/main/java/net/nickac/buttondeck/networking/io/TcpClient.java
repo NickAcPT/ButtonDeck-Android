@@ -59,7 +59,7 @@ public class TcpClient {
                     INetworkPacket packet = Constants.getNewPacket(packetNumber);
                     if (packet != null) {
                         packet.fromInputStream(inputStream);
-                        packet.execute();
+                        packet.execute(this, true);
                     }
                 } else {
                     Thread.sleep(50);
@@ -84,6 +84,7 @@ public class TcpClient {
                     for (INetworkPacket iNetworkPacket : toDeliver) {
                         outputStream.writeLong(iNetworkPacket.getPacketId());
                         iNetworkPacket.toOutputStream(outputStream);
+                        iNetworkPacket.execute(this, false);
                     }
                     toDeliver.clear();
                 }

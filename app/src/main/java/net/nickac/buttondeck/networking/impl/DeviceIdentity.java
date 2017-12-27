@@ -1,7 +1,10 @@
 package net.nickac.buttondeck.networking.impl;
 
+import android.os.Build;
+
 import net.nickac.buttondeck.networking.INetworkPacket;
 import net.nickac.buttondeck.networking.compat.GuidCompact;
+import net.nickac.buttondeck.networking.io.TcpClient;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -17,8 +20,10 @@ import static net.nickac.buttondeck.utils.Constants.sharedPreferences;
  */
 public class DeviceIdentity implements INetworkPacket {
     @Override
-    public void execute() {
-
+    public void execute(TcpClient client, boolean received) {
+        if (received) {
+            client.sendPacket(clonePacket());
+        }
     }
 
     @Override
@@ -34,6 +39,10 @@ public class DeviceIdentity implements INetworkPacket {
     @Override
     public void toOutputStream(DataOutputStream writer) throws IOException {
         //From client to server
+        if (sharedPreferences != null) {
+            writer.writeUTF(sharedPreferences.getString(DEVICE_GUID_PREF, "-"));
+        }
+        writer.writeUTF(Build.MANUFACTURER + " " + Build.MODEL);
     }
 
     @Override

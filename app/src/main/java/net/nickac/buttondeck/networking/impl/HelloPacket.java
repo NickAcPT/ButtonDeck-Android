@@ -3,6 +3,7 @@ package net.nickac.buttondeck.networking.impl;
 import net.nickac.buttondeck.networking.INetworkPacket;
 import net.nickac.buttondeck.networking.io.ArchitectureAnnotation;
 import net.nickac.buttondeck.networking.io.PacketArchitecture;
+import net.nickac.buttondeck.networking.io.TcpClient;
 import net.nickac.buttondeck.utils.Constants;
 
 import java.io.DataInputStream;
@@ -20,7 +21,7 @@ import static net.nickac.buttondeck.utils.Constants.sharedPreferences;
 @ArchitectureAnnotation(PacketArchitecture.CLIENT_TO_SERVER)
 public class HelloPacket implements INetworkPacket {
     @Override
-    public void execute() {
+    public void execute(TcpClient client, boolean received) {
 
     }
 

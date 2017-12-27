@@ -1,5 +1,7 @@
 package net.nickac.buttondeck.networking;
 
+import net.nickac.buttondeck.networking.io.TcpClient;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,7 +12,7 @@ import java.io.IOException;
  * Please see the project root to find the LICENSE file.
  */
 public interface INetworkPacket {
-    void execute();
+    void execute(TcpClient client, boolean received);
 
     INetworkPacket clonePacket();
 
