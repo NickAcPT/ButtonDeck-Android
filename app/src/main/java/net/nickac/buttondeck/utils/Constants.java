@@ -4,7 +4,8 @@ import android.content.SharedPreferences;
 import android.util.LongSparseArray;
 
 import net.nickac.buttondeck.networking.INetworkPacket;
-import net.nickac.buttondeck.networking.impl.DeviceIdentity;
+import net.nickac.buttondeck.networking.impl.DeviceIdentityPacket;
+import net.nickac.buttondeck.networking.impl.HearthbeatPacket;
 import net.nickac.buttondeck.networking.impl.HelloPacket;
 
 /**
@@ -23,7 +24,8 @@ public class Constants {
 
     static {
         registerPacket(new HelloPacket());
-        registerPacket(new DeviceIdentity());
+        registerPacket(new DeviceIdentityPacket());
+        registerPacket(new HearthbeatPacket());
     }
 
 

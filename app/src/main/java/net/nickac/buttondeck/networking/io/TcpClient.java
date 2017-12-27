@@ -1,5 +1,7 @@
 package net.nickac.buttondeck.networking.io;
 
+import android.util.Log;
+
 import net.nickac.buttondeck.networking.INetworkPacket;
 import net.nickac.buttondeck.utils.Constants;
 
@@ -79,11 +81,14 @@ public class TcpClient {
             while (toDeliver != null && internalSocket != null && internalSocket.isConnected()) {
                 if (toDeliver.size() < 1) {
                     Thread.sleep(50);
+                    continue;
                 }
                 synchronized (toDeliver) {
                     for (INetworkPacket iNetworkPacket : toDeliver) {
+                        Log.i("ButtonDeck", "Written packet with ID " + iNetworkPacket.getPacketId() + ".");
                         outputStream.writeLong(iNetworkPacket.getPacketId());
                         iNetworkPacket.toOutputStream(outputStream);
+                        outputStream.flush();
                         iNetworkPacket.execute(this, false);
                     }
                     toDeliver.clear();

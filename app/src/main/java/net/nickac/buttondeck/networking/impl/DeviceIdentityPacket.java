@@ -18,7 +18,8 @@ import static net.nickac.buttondeck.utils.Constants.sharedPreferences;
  * This project is licensed with the MIT license.
  * Please see the project root to find the LICENSE file.
  */
-public class DeviceIdentity implements INetworkPacket {
+public class DeviceIdentityPacket implements INetworkPacket {
+    static String deviceGuid;
     @Override
     public void execute(TcpClient client, boolean received) {
         if (received) {
@@ -28,7 +29,9 @@ public class DeviceIdentity implements INetworkPacket {
 
     @Override
     public INetworkPacket clonePacket() {
-        return new DeviceIdentity();
+        if (sharedPreferences != null)
+            deviceGuid = sharedPreferences.getString(DEVICE_GUID_PREF, "-");
+        return new DeviceIdentityPacket();
     }
 
     @Override
@@ -39,9 +42,7 @@ public class DeviceIdentity implements INetworkPacket {
     @Override
     public void toOutputStream(DataOutputStream writer) throws IOException {
         //From client to server
-        if (sharedPreferences != null) {
-            writer.writeUTF(sharedPreferences.getString(DEVICE_GUID_PREF, "-"));
-        }
+        writer.writeUTF(deviceGuid == null ? "00000000-0000-0000-0000-000000000000" : deviceGuid);
         writer.writeUTF(Build.MANUFACTURER + " " + Build.MODEL);
     }
 

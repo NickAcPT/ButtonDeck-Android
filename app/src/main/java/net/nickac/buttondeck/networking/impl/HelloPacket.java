@@ -40,7 +40,11 @@ public class HelloPacket implements INetworkPacket {
         //Write the protocol version
         writer.writeInt(Constants.PROTOCOL_VERSION);
         //Write if we have a Guid for identification
-        writer.writeBoolean(sharedPreferences != null && sharedPreferences.contains(DEVICE_GUID_PREF) && !sharedPreferences.getString(DEVICE_GUID_PREF, "").isEmpty());
+        boolean hasGuid = sharedPreferences != null && sharedPreferences.contains(DEVICE_GUID_PREF) && !sharedPreferences.getString(DEVICE_GUID_PREF, "").isEmpty();
+        writer.writeBoolean(hasGuid);
+        if (hasGuid) {
+            writer.writeUTF(sharedPreferences.getString(DEVICE_GUID_PREF, ""));
+        }
     }
 
     @Override
