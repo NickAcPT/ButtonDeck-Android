@@ -5,6 +5,7 @@ import android.util.Log;
 import net.nickac.buttondeck.networking.INetworkPacket;
 import net.nickac.buttondeck.utils.Constants;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -85,11 +86,19 @@ public class TcpClient {
                 }
                 synchronized (toDeliver) {
                     for (INetworkPacket iNetworkPacket : toDeliver) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        DataOutputStream stream = new DataOutputStream(baos);
+
                         Log.i("ButtonDeck", "Written packet with ID " + iNetworkPacket.getPacketId() + ".");
-                        outputStream.writeLong(iNetworkPacket.getPacketId());
-                        iNetworkPacket.toOutputStream(outputStream);
+                        stream.writeLong(iNetworkPacket.getPacketId());
+                        iNetworkPacket.toOutputStream(stream);
+
+                        outputStream.write(baos.toByteArray());
                         outputStream.flush();
                         iNetworkPacket.execute(this, false);
+
+                        stream.close();
+                        baos.close();
                     }
                     toDeliver.clear();
                 }
