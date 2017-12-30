@@ -9,6 +9,7 @@ import net.nickac.buttondeck.networking.impl.DesktopDisconnectPacket;
 import net.nickac.buttondeck.networking.impl.DeviceIdentityPacket;
 import net.nickac.buttondeck.networking.impl.HeartbeatPacket;
 import net.nickac.buttondeck.networking.impl.HelloPacket;
+import net.nickac.buttondeck.networking.impl.SingleSlotImageChangePacket;
 
 /**
  * Created by NickAc on 24/12/2017.
@@ -30,6 +31,7 @@ public class Constants {
         registerPacket(new DeviceIdentityPacket());
         registerPacket(new HeartbeatPacket());
         registerPacket(new DesktopDisconnectPacket());
+        registerPacket(new SingleSlotImageChangePacket());
     }
 
 

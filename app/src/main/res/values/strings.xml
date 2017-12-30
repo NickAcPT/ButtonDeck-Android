@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ButtonDeck</string>
+    <string name="buttondeck">ButtonDeck</string>
+    <string name="default_status">Auto-connecting...</string>
 </resources>
