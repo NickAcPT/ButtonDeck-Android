@@ -18,9 +18,7 @@ public class ButtonDeckActivity extends AppCompatActivity {
     private static final int IDLE_DELAY_MINUTES = 5;
     TcpClient client;
     Handler _idleHandler = new Handler();
-    Runnable _idleRunnable = () -> {
-        dimScreen(1.0f);
-    };
+    Runnable _idleRunnable = () -> dimScreen(1.0f);
 
     public void dimScreen(float dim) {
         WindowManager.LayoutParams lp = getWindow().getAttributes();

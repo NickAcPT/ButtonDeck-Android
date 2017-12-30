@@ -2,4 +2,7 @@
     <string name="app_name">ButtonDeck</string>
     <string name="buttondeck">ButtonDeck</string>
     <string name="default_status">Auto-connecting...</string>
+    <string name="protocol_version_0">Protocol version: {0}</string>
+    <string name="device_name">Name:</string>
+    <string name="device_ip">Device IP:</string>
 </resources>

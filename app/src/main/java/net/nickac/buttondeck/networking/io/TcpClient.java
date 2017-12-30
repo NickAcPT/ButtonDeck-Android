@@ -9,9 +9,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by NickAc on 26/12/2017.
@@ -20,7 +22,8 @@ import java.util.List;
  */
 public class TcpClient {
     private final List<INetworkPacket> toDeliver = new ArrayList<>();
-    boolean createNewThread;
+    boolean createNewThread = true;
+    private UUID connectionUUID = UUID.randomUUID();
     private String ip;
     private int port;
     private Socket internalSocket;
@@ -28,10 +31,19 @@ public class TcpClient {
     private Thread dataThread;
     private Thread dataDeliveryThread;
     private List<Runnable> eventConnected = new ArrayList<>();
-    private int timeout = 300;
+    private int timeout = 1500;
     public TcpClient(String ip, int port) {
         this.ip = ip;
         this.port = port;
+    }
+
+    public UUID getConnectionUUID() {
+        return connectionUUID;
+    }
+
+    public boolean waitForDisconnection() throws InterruptedException {
+        dataThread.join();
+        return true;
     }
 
     public boolean isCreateNewThread() {
@@ -53,7 +65,6 @@ public class TcpClient {
                 try {
                     initSocket();
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
             });
             internalThread.start();
@@ -106,7 +117,7 @@ public class TcpClient {
         try {
             outputStream = new DataOutputStream(internalSocket.getOutputStream());
 
-            while (toDeliver != null && internalSocket != null && internalSocket.isConnected()) {
+            while (internalSocket != null && internalSocket.isConnected()) {
                 if (toDeliver.size() < 1) {
                     Thread.sleep(50);
                     continue;
@@ -140,20 +151,21 @@ public class TcpClient {
 
     public void close() {
         try {
-            internalSocket.close();
+            if (internalSocket != null) internalSocket.close();
+            if (internalThread != null) internalThread.interrupt();
+            if (dataThread != null) dataThread.interrupt();
+            if (dataDeliveryThread != null) dataDeliveryThread.interrupt();
         } catch (IOException e) {
         }
     }
 
     private void initSocket() throws IOException {
-        try {
-            internalSocket = new Socket(ip, port);
-            for (Runnable r : eventConnected) {
-                r.run();
-            }
-        } catch (IOException e) {
-            throw e;
+        internalSocket = new Socket();
+        internalSocket.connect(new InetSocketAddress(ip, port), timeout);
+        for (Runnable r : eventConnected) {
+            r.run();
         }
+
         dataThread = new Thread(this::readData);
         dataThread.start();
         dataDeliveryThread = new Thread(this::sendData);
