@@ -20,6 +20,7 @@ import java.util.List;
  */
 public class TcpClient {
     private final List<INetworkPacket> toDeliver = new ArrayList<>();
+    boolean createNewThread;
     private String ip;
     private int port;
     private Socket internalSocket;
@@ -27,12 +28,38 @@ public class TcpClient {
     private Thread dataThread;
     private Thread dataDeliveryThread;
     private List<Runnable> eventConnected = new ArrayList<>();
-
+    private int timeout = 300;
     public TcpClient(String ip, int port) {
         this.ip = ip;
         this.port = port;
-        internalThread = new Thread(this::initSocket);
-        internalThread.start();
+    }
+
+    public boolean isCreateNewThread() {
+        return createNewThread;
+    }
+
+    public void setCreateNewThread(boolean createNewThread) {
+        this.createNewThread = createNewThread;
+    }
+
+    public void connect(int timeout) throws IOException {
+        this.timeout = timeout;
+        connect();
+    }
+
+    public void connect() throws IOException {
+        if (createNewThread) {
+            internalThread = new Thread(() -> {
+                try {
+                    initSocket();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            internalThread.start();
+        } else {
+            initSocket();
+        }
     }
 
     public void onConnected(Runnable event) {
@@ -118,14 +145,14 @@ public class TcpClient {
         }
     }
 
-    private void initSocket() {
+    private void initSocket() throws IOException {
         try {
             internalSocket = new Socket(ip, port);
             for (Runnable r : eventConnected) {
                 r.run();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
         dataThread = new Thread(this::readData);
         dataThread.start();
