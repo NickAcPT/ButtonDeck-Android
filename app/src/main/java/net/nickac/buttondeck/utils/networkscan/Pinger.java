@@ -5,6 +5,7 @@ import net.nickac.buttondeck.utils.NickTuple;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,6 +20,11 @@ public class Pinger {
 
 
     public static List<NetworkDevice> getDevicesOnNetwork(String subnet) {
+
+        if (DiscoverRunner.devices == null)
+            DiscoverRunner.devices = new HashMap<>();
+        if (!DiscoverRunner.devices.isEmpty()) DiscoverRunner.devices.clear();
+
         LinkedList<NickTuple<InetAddress, String>> resAddresses = new LinkedList<NickTuple<InetAddress, String>>();
         DiscoverRunner[] tasks = new DiscoverRunner[NUMTHREADS];
 
@@ -57,7 +63,7 @@ public class Pinger {
         ArrayList<NetworkDevice> foundDev = new ArrayList<>(resAddresses.size());
 
         for (NickTuple<InetAddress, String> a : resAddresses) {
-            foundDev.add(new NetworkDevice(a.getValue(), a.getKey().getHostAddress()));
+            foundDev.add(new NetworkDevice(a.getKey().getHostAddress(), a.getValue()));
         }
 
 

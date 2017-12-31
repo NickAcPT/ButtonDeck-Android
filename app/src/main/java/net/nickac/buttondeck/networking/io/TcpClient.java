@@ -108,7 +108,6 @@ public class TcpClient {
             }
         } catch (IOException e) {
         } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 

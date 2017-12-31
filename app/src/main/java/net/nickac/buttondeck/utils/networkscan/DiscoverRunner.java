@@ -51,9 +51,6 @@ public class DiscoverRunner implements Runnable {
 
     @Override
     public void run() {
-        if (devices == null)
-            devices = new HashMap<>();
-        if (!devices.isEmpty()) devices.clear();
 
         int timeout = 750;
         for (int i = startAdd; i < startAdd + numAdds; i++) {
