@@ -21,6 +21,7 @@ public class AlternativeHelloPacket implements INetworkPacket {
 
     @Override
     public void execute(TcpClient client, boolean received) {
+        if (!received) return;
         DiscoverRunner.devices.put(client.getConnectionUUID(), deviceName);
         client.close();
     }

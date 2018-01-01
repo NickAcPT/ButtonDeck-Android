@@ -32,6 +32,7 @@ public class TcpClient {
     private Thread dataDeliveryThread;
     private List<Runnable> eventConnected = new ArrayList<>();
     private int timeout = 1500;
+
     public TcpClient(String ip, int port) {
         this.ip = ip;
         this.port = port;
@@ -41,9 +42,8 @@ public class TcpClient {
         return connectionUUID;
     }
 
-    public boolean waitForDisconnection() throws InterruptedException {
+    public void waitForDisconnection() throws InterruptedException {
         dataThread.join();
-        return true;
     }
 
     public boolean isCreateNewThread() {
@@ -144,7 +144,6 @@ public class TcpClient {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 

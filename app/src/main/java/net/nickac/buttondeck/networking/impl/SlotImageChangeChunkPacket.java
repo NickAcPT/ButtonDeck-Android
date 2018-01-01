@@ -18,15 +18,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * Created by NickAc on 29/12/2017.
+ * Created by NickAc on 31/12/2017.
  * This project is licensed with the MIT license.
  * Please see the project root to find the LICENSE file.
  */
 @ArchitectureAnnotation(PacketArchitecture.SERVER_TO_CLIENT)
-public class SingleSlotImageChangePacket implements INetworkPacket {
-    public static final int bytesLimit = 1024 * 5;
-    byte[] imageBytes = new byte[bytesLimit];
-
+public class SlotImageChangeChunkPacket implements INetworkPacket {
+    private static final int bytesLimit = 1024 * 5;
 
     @Override
     public void execute(TcpClient client, boolean received) {
@@ -35,24 +33,29 @@ public class SingleSlotImageChangePacket implements INetworkPacket {
 
     @Override
     public INetworkPacket clonePacket() {
-        return new SingleSlotImageChangePacket();
+        return new SlotImageChangeChunkPacket();
     }
 
     @Override
     public long getPacketId() {
-        return 5;
+        return 7;
     }
 
     @Override
     public void toOutputStream(DataOutputStream writer) {
-        //Client to server
+
     }
 
     @Override
     public void fromInputStream(DataInputStream reader) throws IOException {
-        //Server to client
-        if (reader.readBoolean()) {
-            readDeckImage(reader);
+        int imagesToRead = reader.readInt();
+
+        for (int i = 0; i < imagesToRead; i++) {
+            try {
+                readDeckImage(reader);
+            } catch (IOException ignored) {
+            }
+
         }
     }
 
@@ -60,15 +63,17 @@ public class SingleSlotImageChangePacket implements INetworkPacket {
         byte[] imageBytes = new byte[bytesLimit];
 
         int imageSlot = reader.readInt();
-        int arrayLenght = reader.readInt();
-        int numberRead = reader.read(imageBytes);
-        if (numberRead != arrayLenght) {
-            Log.e("ButtonDeck", "The number of bytes read is different from the size of the array");
+        int arrayLength = reader.readInt();
+        int numberRead = reader.read(imageBytes, 0, arrayLength);
+        if (numberRead != arrayLength) {
+            Log.e("ButtonDeck",
+                    "The number of bytes read is different from the size of the array. " +
+                            "| numberRead: {" + numberRead + "} vs arrayLength: {" + arrayLength + "}");
         }
         if (Constants.buttonDeckContext != null) {
             //Start a new thread to create a bitmap
             Thread th = new Thread(() -> {
-                Bitmap bmp = BitmapFactory.decodeByteArray(imageBytes, 0, arrayLenght);
+                Bitmap bmp = BitmapFactory.decodeByteArray(imageBytes, 0, arrayLength);
                 int id = Constants.buttonDeckContext.getResources().getIdentifier("button" + imageSlot, "id", Constants.buttonDeckContext.getPackageName());
                 if (id <= 0) return;
                 Constants.buttonDeckContext.runOnUiThread(() -> {
@@ -83,6 +88,4 @@ public class SingleSlotImageChangePacket implements INetworkPacket {
             th.start();
         }
     }
-
-
 }

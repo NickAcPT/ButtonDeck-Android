@@ -11,6 +11,7 @@ import net.nickac.buttondeck.networking.impl.DeviceIdentityPacket;
 import net.nickac.buttondeck.networking.impl.HeartbeatPacket;
 import net.nickac.buttondeck.networking.impl.HelloPacket;
 import net.nickac.buttondeck.networking.impl.SingleSlotImageChangePacket;
+import net.nickac.buttondeck.networking.impl.SlotImageChangeChunkPacket;
 
 /**
  * Created by NickAc on 24/12/2017.
@@ -23,7 +24,7 @@ public class Constants {
     public static SharedPreferences sharedPreferences;
 
     public static String DEVICE_GUID_PREF = "device_guid";
-    public static int PROTOCOL_VERSION = 8;
+    public static int PROTOCOL_VERSION = 9;
     public static int PORT_NUMBER = 5080;
     public static LongSparseArray<INetworkPacket> packetMap = new LongSparseArray<>();
 
@@ -34,6 +35,7 @@ public class Constants {
         registerPacket(new DesktopDisconnectPacket());
         registerPacket(new SingleSlotImageChangePacket());
         registerPacket(new AlternativeHelloPacket());
+        registerPacket(new SlotImageChangeChunkPacket());
     }
 
 
