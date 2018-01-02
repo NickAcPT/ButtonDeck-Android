@@ -20,7 +20,7 @@ public class ButtonDeckActivity extends AppCompatActivity {
     public static final String EXTRA_IP = "net.nickac.buttondeck.networking.IP";
     public static final String EXTRA_PORT = "net.nickac.buttondeck.networking.PORT";
     private static final int IDLE_DELAY_MINUTES = 5;
-    TcpClient client;
+    private static TcpClient client;
     Handler _idleHandler = new Handler();
     Runnable _idleRunnable = () -> {
         dimScreen(1.0f);
@@ -58,11 +58,13 @@ public class ButtonDeckActivity extends AppCompatActivity {
             sharedPreferences = this.getSharedPreferences(sharedPreferencesName, MODE_PRIVATE);
         }
 
-        client = new TcpClient(connectIP, connectPort);
-        try {
-            client.connect();
-            client.onConnected(() -> client.sendPacket(new HelloPacket()));
-        } catch (IOException e) {
+        if (client == null) {
+            client = new TcpClient(connectIP, connectPort);
+            try {
+                client.connect();
+                client.onConnected(() -> client.sendPacket(new HelloPacket()));
+            } catch (IOException e) {
+            }
         }
     }
 
@@ -84,6 +86,7 @@ public class ButtonDeckActivity extends AppCompatActivity {
     protected void onPause() {
         Constants.buttonDeckContext = null;
         super.onPause();
+
     }
 
     @Override
@@ -91,6 +94,7 @@ public class ButtonDeckActivity extends AppCompatActivity {
         Constants.buttonDeckContext = null;
         super.onStop();
         client.close();
+        client = null;
     }
 
     @Override

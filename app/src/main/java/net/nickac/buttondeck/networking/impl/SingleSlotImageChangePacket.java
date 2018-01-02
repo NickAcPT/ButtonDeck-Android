@@ -24,8 +24,7 @@ import java.io.IOException;
  */
 @ArchitectureAnnotation(PacketArchitecture.SERVER_TO_CLIENT)
 public class SingleSlotImageChangePacket implements INetworkPacket {
-    public static final int bytesLimit = 1024 * 5;
-    byte[] imageBytes = new byte[bytesLimit];
+    public static final int bytesLimit = 1024 * 15;
 
 
     @Override
@@ -61,19 +60,27 @@ public class SingleSlotImageChangePacket implements INetworkPacket {
 
         int imageSlot = reader.readInt();
         int arrayLenght = reader.readInt();
-        int numberRead = reader.read(imageBytes);
+        int numberRead = reader.read(imageBytes, 0, arrayLenght);
         if (numberRead != arrayLenght) {
             Log.e("ButtonDeck", "The number of bytes read is different from the size of the array");
         }
         if (Constants.buttonDeckContext != null) {
             //Start a new thread to create a bitmap
+            Log.i("ButtonDeck", "Starting a new thread to decode the bitmap!");
             Thread th = new Thread(() -> {
+
+                Log.i("ButtonDeck", "Starting to decode the bitmap!");
                 Bitmap bmp = BitmapFactory.decodeByteArray(imageBytes, 0, arrayLenght);
+                Log.i("ButtonDeck", "Decode Complete!");
                 int id = Constants.buttonDeckContext.getResources().getIdentifier("button" + imageSlot, "id", Constants.buttonDeckContext.getPackageName());
                 if (id <= 0) return;
                 Constants.buttonDeckContext.runOnUiThread(() -> {
+                    Log.i("ButtonDeck", "Findind ID!");
+
                     ImageButton view = Constants.buttonDeckContext.findViewById(id);
                     if (view != null) {
+                        Log.i("ButtonDeck", "Setting button!");
+
                         view.setScaleType(ImageView.ScaleType.FIT_XY);
                         view.setBackground(new BitmapDrawable(Constants.buttonDeckContext.getResources(), bmp));
                     }

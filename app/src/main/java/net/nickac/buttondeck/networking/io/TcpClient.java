@@ -97,6 +97,7 @@ public class TcpClient {
             while (internalSocket != null && internalSocket.isConnected()) {
                 if (inputStream.available() > 0) {
                     long packetNumber = inputStream.readLong();
+                    Log.i("ButtonDeck", "Read packet with ID " + packetNumber + ".");
                     INetworkPacket packet = Constants.getNewPacket(packetNumber);
                     if (packet != null) {
                         packet.fromInputStream(inputStream);
@@ -106,6 +107,7 @@ public class TcpClient {
                     Thread.sleep(50);
                 }
             }
+            Log.e("ButtonDeck", "ReadData stopped!");
         } catch (IOException e) {
         } catch (InterruptedException e) {
         }

@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 @ArchitectureAnnotation(PacketArchitecture.SERVER_TO_CLIENT)
 public class SlotImageChangeChunkPacket implements INetworkPacket {
-    private static final int bytesLimit = 1024 * 5;
+    private static final int bytesLimit = 1024 * 15;
 
     @Override
     public void execute(TcpClient client, boolean received) {
