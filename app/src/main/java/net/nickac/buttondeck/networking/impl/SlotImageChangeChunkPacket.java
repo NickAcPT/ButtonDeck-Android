@@ -3,7 +3,6 @@ package net.nickac.buttondeck.networking.impl;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -64,12 +63,12 @@ public class SlotImageChangeChunkPacket implements INetworkPacket {
 
         int imageSlot = reader.readInt();
         int arrayLength = reader.readInt();
-        int numberRead = reader.read(imageBytes, 0, arrayLength);
-        if (numberRead != arrayLength) {
+        reader.readFully(imageBytes, 0, arrayLength);
+        /*if (numberRead != arrayLength) {
             Log.e("ButtonDeck",
                     "The number of bytes read is different from the size of the array. " +
                             "| numberRead: {" + numberRead + "} vs arrayLength: {" + arrayLength + "}");
-        }
+        }*/
         if (Constants.buttonDeckContext != null) {
             //Start a new thread to create a bitmap
             Thread th = new Thread(() -> {

@@ -60,10 +60,11 @@ public class SingleSlotImageChangePacket implements INetworkPacket {
 
         int imageSlot = reader.readInt();
         int arrayLenght = reader.readInt();
-        int numberRead = reader.read(imageBytes, 0, arrayLenght);
-        if (numberRead != arrayLenght) {
+        reader.readFully(imageBytes, 0, arrayLenght);
+        /*if (numberRead != arrayLenght) {
             Log.e("ButtonDeck", "The number of bytes read is different from the size of the array");
-        }
+            return;
+        }*/
         if (Constants.buttonDeckContext != null) {
             //Start a new thread to create a bitmap
             Log.i("ButtonDeck", "Starting a new thread to decode the bitmap!");
@@ -84,8 +85,9 @@ public class SingleSlotImageChangePacket implements INetworkPacket {
                         view.setScaleType(ImageView.ScaleType.FIT_XY);
                         view.setBackground(new BitmapDrawable(Constants.buttonDeckContext.getResources(), bmp));
                     }
-
+                    System.gc();
                 });
+
             });
             th.start();
         }
