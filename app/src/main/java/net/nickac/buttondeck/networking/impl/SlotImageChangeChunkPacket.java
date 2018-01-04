@@ -23,7 +23,7 @@ import java.io.IOException;
  */
 @ArchitectureAnnotation(PacketArchitecture.SERVER_TO_CLIENT)
 public class SlotImageChangeChunkPacket implements INetworkPacket {
-    private static final int bytesLimit = 1024 * 15;
+    private static final int bytesLimit = 1024 * 50;
 
     @Override
     public void execute(TcpClient client, boolean received) {
@@ -64,11 +64,8 @@ public class SlotImageChangeChunkPacket implements INetworkPacket {
         int imageSlot = reader.readInt();
         int arrayLength = reader.readInt();
         reader.readFully(imageBytes, 0, arrayLength);
-        /*if (numberRead != arrayLength) {
-            Log.e("ButtonDeck",
-                    "The number of bytes read is different from the size of the array. " +
-                            "| numberRead: {" + numberRead + "} vs arrayLength: {" + arrayLength + "}");
-        }*/
+
+
         if (Constants.buttonDeckContext != null) {
             //Start a new thread to create a bitmap
             Thread th = new Thread(() -> {

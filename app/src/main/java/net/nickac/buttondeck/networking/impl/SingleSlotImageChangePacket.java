@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 @ArchitectureAnnotation(PacketArchitecture.SERVER_TO_CLIENT)
 public class SingleSlotImageChangePacket implements INetworkPacket {
-    public static final int bytesLimit = 1024 * 15;
+    public static final int bytesLimit = 1024 * 50;
 
 
     @Override

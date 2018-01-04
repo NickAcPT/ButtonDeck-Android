@@ -18,7 +18,6 @@ import static net.nickac.buttondeck.utils.Constants.sharedPreferencesName;
 
 public class ButtonDeckActivity extends AppCompatActivity {
     public static final String EXTRA_IP = "net.nickac.buttondeck.networking.IP";
-    public static final String EXTRA_PORT = "net.nickac.buttondeck.networking.PORT";
     private static final int IDLE_DELAY_MINUTES = 5;
     private static TcpClient client;
     Handler _idleHandler = new Handler();
@@ -93,7 +92,7 @@ public class ButtonDeckActivity extends AppCompatActivity {
     protected void onStop() {
         Constants.buttonDeckContext = null;
         super.onStop();
-        client.close();
+        if (client != null) client.close();
         client = null;
     }
 
