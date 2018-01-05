@@ -6,6 +6,7 @@ import android.util.LongSparseArray;
 import net.nickac.buttondeck.ButtonDeckActivity;
 import net.nickac.buttondeck.networking.INetworkPacket;
 import net.nickac.buttondeck.networking.impl.AlternativeHelloPacket;
+import net.nickac.buttondeck.networking.impl.ButtonInteractPacket;
 import net.nickac.buttondeck.networking.impl.DesktopDisconnectPacket;
 import net.nickac.buttondeck.networking.impl.DeviceIdentityPacket;
 import net.nickac.buttondeck.networking.impl.HeartbeatPacket;
@@ -36,6 +37,7 @@ public class Constants {
         registerPacket(new SingleSlotImageChangePacket());
         registerPacket(new AlternativeHelloPacket());
         registerPacket(new SlotImageChangeChunkPacket());
+        registerPacket(new ButtonInteractPacket(ButtonInteractPacket.ButtonAction.NONE));
     }
 
 
