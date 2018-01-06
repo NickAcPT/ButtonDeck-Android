@@ -3,7 +3,6 @@ package net.nickac.buttondeck.networking.impl;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -62,25 +61,25 @@ public class SingleSlotImageChangePacket implements INetworkPacket {
         int arrayLenght = reader.readInt();
         reader.readFully(imageBytes, 0, arrayLenght);
         /*if (numberRead != arrayLenght) {
-            Log.e("ButtonDeck", "The number of bytes read is different from the size of the array");
+            //Log.e("ButtonDeck", "The number of bytes read is different from the size of the array");
             return;
         }*/
         if (Constants.buttonDeckContext != null) {
             //Start a new thread to create a bitmap
-            Log.i("ButtonDeck", "Starting a new thread to decode the bitmap!");
+            //Log.i("ButtonDeck", "Starting a new thread to decode the bitmap!");
             Thread th = new Thread(() -> {
 
-                Log.i("ButtonDeck", "Starting to decode the bitmap!");
+                //Log.i("ButtonDeck", "Starting to decode the bitmap!");
                 Bitmap bmp = BitmapFactory.decodeByteArray(imageBytes, 0, arrayLenght);
-                Log.i("ButtonDeck", "Decode Complete!");
+                //Log.i("ButtonDeck", "Decode Complete!");
                 int id = Constants.buttonDeckContext.getResources().getIdentifier("button" + imageSlot, "id", Constants.buttonDeckContext.getPackageName());
                 if (id <= 0) return;
                 Constants.buttonDeckContext.runOnUiThread(() -> {
-                    Log.i("ButtonDeck", "Findind ID!");
+                    ////Log.i("ButtonDeck", "Findind ID!");
 
                     ImageButton view = Constants.buttonDeckContext.findViewById(id);
                     if (view != null) {
-                        Log.i("ButtonDeck", "Setting button!");
+                        ////Log.i("ButtonDeck", "Setting button!");
 
                         view.setScaleType(ImageView.ScaleType.FIT_XY);
                         view.setBackground(new BitmapDrawable(Constants.buttonDeckContext.getResources(), bmp));

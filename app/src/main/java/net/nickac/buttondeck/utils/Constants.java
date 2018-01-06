@@ -13,6 +13,7 @@ import net.nickac.buttondeck.networking.impl.HeartbeatPacket;
 import net.nickac.buttondeck.networking.impl.HelloPacket;
 import net.nickac.buttondeck.networking.impl.SingleSlotImageChangePacket;
 import net.nickac.buttondeck.networking.impl.SlotImageChangeChunkPacket;
+import net.nickac.buttondeck.networking.impl.SlotImageClearChunkPacket;
 import net.nickac.buttondeck.networking.impl.SlotImageClearPacket;
 
 /**
@@ -26,7 +27,7 @@ public class Constants {
     public static SharedPreferences sharedPreferences;
 
     public static String DEVICE_GUID_PREF = "device_guid";
-    public static int PROTOCOL_VERSION = 11;
+    public static int PROTOCOL_VERSION = 12;
     public static int PORT_NUMBER = 5080;
     public static LongSparseArray<INetworkPacket> packetMap = new LongSparseArray<>();
 
@@ -40,6 +41,7 @@ public class Constants {
         registerPacket(new SlotImageChangeChunkPacket());
         registerPacket(new ButtonInteractPacket(ButtonInteractPacket.ButtonAction.NONE));
         registerPacket(new SlotImageClearPacket());
+        registerPacket(new SlotImageClearChunkPacket());
     }
 
 
@@ -48,6 +50,7 @@ public class Constants {
     }
 
     public static INetworkPacket getNewPacket(long id) {
+        ////Log.d("ButtonDeck", "Getting new packet for id " + id + ".");
         INetworkPacket packet = packetMap.get(id, null);
         return packet.clonePacket();
     }

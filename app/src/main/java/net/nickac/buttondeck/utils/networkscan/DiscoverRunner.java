@@ -1,7 +1,5 @@
 package net.nickac.buttondeck.utils.networkscan;
 
-import android.util.Log;
-
 import net.nickac.buttondeck.networking.impl.AlternativeHelloPacket;
 import net.nickac.buttondeck.networking.io.TcpClient;
 import net.nickac.buttondeck.utils.Constants;
@@ -37,7 +35,7 @@ public class DiscoverRunner implements Runnable {
     public static NickTuple<Boolean, String> isPortOpen(final String ip, final int port, final int timeout) {
 
         try {
-            Log.i("ButtonDeck", "Trying to check IP: " + ip);
+            //Log.i("ButtonDeck", "Trying to check IP: " + ip);
             TcpClient socket = new TcpClient(ip, port);
             socket.setCreateNewThread(false);
             socket.connect(timeout);

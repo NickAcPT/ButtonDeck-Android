@@ -47,6 +47,7 @@ public class ButtonInteractPacket implements INetworkPacket {
     public void toOutputStream(DataOutputStream writer) throws IOException {
         writer.writeInt(action.getId());
         writer.writeInt(slotID);
+        //Log.d("ButtonDeck", "Wrote interaction with " + action.name() + ".");
     }
 
     @Override

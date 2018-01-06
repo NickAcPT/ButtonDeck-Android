@@ -1,7 +1,5 @@
 package net.nickac.buttondeck.networking.io;
 
-import android.util.Log;
-
 import net.nickac.buttondeck.networking.INetworkPacket;
 import net.nickac.buttondeck.utils.Constants;
 
@@ -12,6 +10,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ import java.util.UUID;
  * Please see the project root to find the LICENSE file.
  */
 public class TcpClient {
-    private final List<INetworkPacket> toDeliver = new ArrayList<>();
+    private final List<INetworkPacket> toDeliver = Collections.synchronizedList(new ArrayList<INetworkPacket>());
     boolean createNewThread = true;
     private UUID connectionUUID = UUID.randomUUID();
     private String ip;
@@ -43,7 +43,7 @@ public class TcpClient {
     }
 
     public void waitForDisconnection() throws InterruptedException {
-        dataThread.join();
+        dataDeliveryThread.join();
     }
 
     public boolean isCreateNewThread() {
@@ -95,17 +95,22 @@ public class TcpClient {
         try {
             inputStream = new DataInputStream(internalSocket.getInputStream());
             while (internalSocket != null && internalSocket.isConnected()) {
+                if (inputStream.available() > 0) {
                     long packetNumber = inputStream.readLong();
-                    Log.i("ButtonDeck", "Read packet with ID " + packetNumber + ".");
                     INetworkPacket packet = Constants.getNewPacket(packetNumber);
                     if (packet != null) {
                         packet.fromInputStream(inputStream);
                         packet.execute(this, true);
                     }
+                } else {
+                    Thread.sleep(50);
+                }
             }
-            Log.e("ButtonDeck", "ReadData stopped!");
-        } catch (IOException e) {
+        } catch (InterruptedException e1) {
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
+        ////Log.e("ButtonDeck", "ReadData stopped!");
     }
 
     private void sendData() {
@@ -119,11 +124,14 @@ public class TcpClient {
                     continue;
                 }
                 synchronized (toDeliver) {
-                    for (INetworkPacket iNetworkPacket : toDeliver) {
+                    Iterator<INetworkPacket> iter = toDeliver.iterator();
+
+                    while (iter.hasNext()) {
+                        INetworkPacket iNetworkPacket = iter.next();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         DataOutputStream stream = new DataOutputStream(baos);
 
-                        Log.i("ButtonDeck", "Written packet with ID " + iNetworkPacket.getPacketId() + ".");
+                        //Log.i("ButtonDeck", "Written packet with ID " + iNetworkPacket.getPacketId() + ".");
                         stream.writeLong(iNetworkPacket.getPacketId());
                         iNetworkPacket.toOutputStream(stream);
 
@@ -133,8 +141,8 @@ public class TcpClient {
 
                         stream.close();
                         baos.close();
+                        iter.remove();
                     }
-                    toDeliver.clear();
                 }
             }
 
@@ -146,11 +154,12 @@ public class TcpClient {
 
     public void close() {
         try {
-            if (internalSocket != null) internalSocket.close();
             if (internalThread != null) internalThread.interrupt();
             if (dataThread != null) dataThread.interrupt();
             if (dataDeliveryThread != null) dataDeliveryThread.interrupt();
+            if (internalSocket != null) internalSocket.close();
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

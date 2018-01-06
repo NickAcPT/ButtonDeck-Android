@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -94,18 +95,19 @@ public class ButtonDeckActivity extends AppCompatActivity {
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
                             mDownTouch[0] = true;
+                            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                             if (client != null) {
                                 client.sendPacket(new ButtonInteractPacket(finalI, ButtonInteractPacket.ButtonAction.BUTTON_DOWN));
                             }
-                            return true;
+                            return false;
 
                         case MotionEvent.ACTION_UP:
+                            if (client != null) {
+                                client.sendPacket(new ButtonInteractPacket(finalI, ButtonInteractPacket.ButtonAction.BUTTON_UP));
+                            }
                             if (mDownTouch[0]) {
                                 mDownTouch[0] = false;
-                                vibe.vibrate(100);
-                                view.performClick();
                                 if (client != null) {
-                                    client.sendPacket(new ButtonInteractPacket(finalI, ButtonInteractPacket.ButtonAction.BUTTON_UP));
                                     client.sendPacket(new ButtonInteractPacket(finalI, ButtonInteractPacket.ButtonAction.BUTTON_CLICK));
                                 }
                                 return true;
