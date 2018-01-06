@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+
     private void scanDevices() {
         Button rescanButton = findViewById(R.id.rescanButton);
 
