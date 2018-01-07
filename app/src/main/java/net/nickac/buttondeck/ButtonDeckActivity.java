@@ -5,13 +5,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
@@ -114,13 +115,15 @@ public class ButtonDeckActivity extends AppCompatActivity {
             } catch (IOException e) {
             }
         }
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-        int height = displayMetrics.heightPixels;
 
-        int optimalSize = (((height - (10 * 3)) - 10) / 3) - 100;
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getRealSize(size);
+        int height = size.y;
+
+        int optimalSize = ((height - (85 * 2)) - (40 * 3)) / 3;
 
         int optimalFinal = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, optimalSize, getResources().getDisplayMetrics());
-        int optimalFinal2 = optimalSize - (10 * 4);
 
         for (int i = 0; i < 15; i++) {
             final boolean[] mDownTouch = {false};
@@ -129,8 +132,8 @@ public class ButtonDeckActivity extends AppCompatActivity {
             if (button != null) {
                 ViewGroup.LayoutParams params = button.getLayoutParams();
                 button.setAdjustViewBounds(true);
-                button.setMaxWidth(optimalFinal2);
-                button.setMaxHeight(optimalFinal2);
+                button.setMaxWidth(optimalSize);
+                button.setMaxHeight(optimalSize);
                 params.width = optimalFinal;
                 params.height = optimalFinal;
 
