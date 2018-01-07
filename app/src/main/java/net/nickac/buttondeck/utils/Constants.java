@@ -1,6 +1,7 @@
 package net.nickac.buttondeck.utils;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.util.LongSparseArray;
 
 import net.nickac.buttondeck.ButtonDeckActivity;
@@ -50,7 +51,7 @@ public class Constants {
     }
 
     public static INetworkPacket getNewPacket(long id) {
-        ////Log.d("ButtonDeck", "Getting new packet for id " + id + ".");
+        Log.d("ButtonDeck", "Getting new packet for id " + id + ".");
         INetworkPacket packet = packetMap.get(id, null);
         return packet.clonePacket();
     }

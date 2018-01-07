@@ -27,17 +27,31 @@ public class SlotImageClearChunkPacket implements INetworkPacket {
     @Override
     public void execute(TcpClient client, boolean received) {
         if (Constants.buttonDeckContext != null) {
-            for (int slot : toClear) {
-                ImageButton view = Constants.buttonDeckContext.getImageButton(slot);
-                Constants.buttonDeckContext.runOnUiThread(() -> {
-                    if (view != null) {
-                        //Log.i("ButtonDeck", "Setting button [CHUNK]!");
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    for (int slot : toClear) {
+                        ImageButton view = Constants.buttonDeckContext.getImageButton(slot);
 
-                        view.setScaleType(ImageView.ScaleType.FIT_XY);
-                        view.setBackgroundResource(0);
+                        if (view != null) {
+                            //Log.i("ButtonDeck", "Setting button [CHUNK]!");
+                            view.setScaleType(ImageView.ScaleType.FIT_XY);
+                            view.setBackgroundResource(0);
+                        }
+                        System.gc();
                     }
-                    System.gc();
-                });
+                    synchronized (this) {
+                        this.notify();
+                    }
+                }
+            };
+            synchronized (runnable) {
+                Constants.buttonDeckContext.runOnUiThread(runnable);
+                try {
+                    runnable.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -59,7 +73,8 @@ public class SlotImageClearChunkPacket implements INetworkPacket {
 
     @Override
     public void fromInputStream(DataInputStream reader) throws IOException {
-        for (int i = 0; i < reader.readInt(); i++) {
+        int number = reader.readInt();
+        for (int i = 0; i < number; i++) {
             toClear.add(reader.readInt());
         }
     }

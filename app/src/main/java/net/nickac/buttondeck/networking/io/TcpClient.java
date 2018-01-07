@@ -102,6 +102,7 @@ public class TcpClient {
                         packet.fromInputStream(inputStream);
                         packet.execute(this, true);
                     }
+
                 } else {
                     Thread.sleep(50);
                 }
