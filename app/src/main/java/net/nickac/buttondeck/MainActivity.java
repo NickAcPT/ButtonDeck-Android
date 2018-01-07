@@ -1,6 +1,7 @@
 package net.nickac.buttondeck;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -64,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void scanDevices() {
+        if (Build.PRODUCT.contains("sdk")) {
+            // Emulator
+            Intent intent = new Intent(this, ButtonDeckActivity.class);
+            intent.putExtra(ButtonDeckActivity.EXTRA_IP, "10.0.202");
+            startActivity(intent);
+            return;
+        }
+
         Button rescanButton = findViewById(R.id.rescanButton);
 
         //Hide the button for now.
