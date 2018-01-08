@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Pinger {
 
-    private static final int NUMTHREADS = 100;
+    private static final int NUMTHREADS = 50;
 
 
     public static List<NetworkDevice> getDevicesOnNetwork(String subnet) {
