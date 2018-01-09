@@ -3,6 +3,7 @@ package net.nickac.buttondeck;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,17 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     boolean autoScan = true;
     String autoScanPref = "didAutoScan";
+
+    public static boolean isEmulator() {
+        return Build.FINGERPRINT.startsWith("generic")
+                || Build.FINGERPRINT.startsWith("unknown")
+                || Build.MODEL.contains("google_sdk")
+                || Build.MODEL.contains("Emulator")
+                || Build.MODEL.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion")
+                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+                || "google_sdk".equals(Build.PRODUCT);
+    }
 
     @Override
     public void onBackPressed() {
@@ -56,23 +68,10 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-
     @Override
     protected void onDestroy() {
 
         super.onDestroy();
-    }
-
-
-    public static boolean isEmulator() {
-        return Build.FINGERPRINT.startsWith("generic")
-                || Build.FINGERPRINT.startsWith("unknown")
-                || Build.MODEL.contains("google_sdk")
-                || Build.MODEL.contains("Emulator")
-                || Build.MODEL.contains("Android SDK built for x86")
-                || Build.MANUFACTURER.contains("Genymotion")
-                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
-                || "google_sdk".equals(Build.PRODUCT);
     }
 
     private void scanDevices() {
@@ -110,6 +109,28 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                     break;
                 default:
+                    TextView textView2 = findViewById(R.id.statusTextView);
+                    textView2.setText(getString(R.string.devices_found_multiple));
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setSingleChoiceItems(adapter, 0, (dialogInterface, i) -> {
+                        NetworkDevice item = devices.get(i);
+
+                        Toast.makeText(this, "Connecting to " + item.getDeviceName() + "!", Toast.LENGTH_LONG).show();
+
+                        //Connect to the device
+                        Intent intent2 = new Intent(this, ButtonDeckActivity.class);
+                        intent2.putExtra(ButtonDeckActivity.EXTRA_IP, item.getIp());
+                        dialogInterface.dismiss();
+                        startActivity(intent2);
+                    });
+                    builder.setTitle(R.string.devices_found_multiple);
+                    builder.setNeutralButton("Cancel", (dialogInterface, i) -> {
+                    });
+                    AlertDialog dialog = builder.create();
+
+                    dialog.show();
+
 
                     break;
             }

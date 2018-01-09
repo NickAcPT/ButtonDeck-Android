@@ -26,6 +26,19 @@ public class NetworkDeviceAdapter extends ArrayAdapter<NetworkDevice> {
     public NetworkDeviceAdapter(@NonNull Context context, List<NetworkDevice> networkDevices) {
         super(context, 0);
         devices = networkDevices != null ? networkDevices : new ArrayList<>();
+        notifyDataSetChanged();
+    }
+
+
+    @Nullable
+    @Override
+    public NetworkDevice getItem(int position) {
+        return devices.get(position);
+    }
+
+    @Override
+    public int getCount() {
+        return devices.size();
     }
 
     public List<NetworkDevice> getDevices() {
@@ -44,10 +57,10 @@ public class NetworkDeviceAdapter extends ArrayAdapter<NetworkDevice> {
         }
         if (device != null) {
             TextView deviceName = convertView.findViewById(R.id.textView5);
-            deviceName.setText(deviceName.getText().toString() + " " + device.getDeviceName());
+            deviceName.setText(getContext().getString(R.string.device_name) + " " + device.getDeviceName());
 
             TextView deviceIp = convertView.findViewById(R.id.textView4);
-            deviceIp.setText(deviceName.getText().toString() + " " + device.getIp());
+            deviceIp.setText(getContext().getString(R.string.device_ip) + " " + device.getIp());
         }
         return convertView;
     }
