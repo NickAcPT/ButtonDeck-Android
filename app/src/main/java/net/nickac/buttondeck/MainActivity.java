@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    boolean autoScan = true;
     String autoScanPref = "didAutoScan";
 
     public static boolean isEmulator() {
